@@ -1,5 +1,10 @@
+<?php 
+    $filepath = realpath(dirname(__FILE__));
+    include ($filepath.'/../config/config.php'); ?>
+
 <?php
 Class Database{
+  
    public $host   = DB_HOST;
    public $user   = DB_USER;
    public $pass   = DB_PASS;
@@ -14,12 +19,15 @@ Class Database{
  }
  
 private function connectDB(){
+
    $this->link = new mysqli($this->host, $this->user, $this->pass, 
     $this->dbname);
+
    if(!$this->link){
      $this->error ="Connection fail".$this->link->connect_error;
     return false;
    }
+    // mysqli_set_charset($this->link,"utf8");
  }
  
 // Select or Read data
@@ -67,4 +75,4 @@ public function insert($query){
    }
  
 }
-?>
+

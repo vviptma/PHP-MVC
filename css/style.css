@@ -23,8 +23,10 @@ img{max-width:100%;}
 /*end reset*/
 body{
 	font-family:Arial, Helvetica, sans-serif;
-	background:url(../images/body_bg3.jpg);
+	
+	background-color: #f1f1f1f1;
 }
+
 .wrap{
 	width:78%;
 	margin:0 auto;
@@ -114,6 +116,10 @@ body{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+}
+.grid_1_of_4.images_1_of_4 {
+  
+    height: 420px;
 }
 .shopping_cart .cart .opencart {
 	width: 7px;
@@ -598,11 +604,11 @@ p.note{
 	text-decoration:underline;
 }
 /**** Grid 1_0f_4 ****/
-.grid_1_of_4{
-	display: block;
-	float:left;
-	margin: 1% 0 1% 1.6%;
-	box-shadow: 0px 0px 3px rgb(150, 150, 150);
+.grid_1_of_4 {
+    display: block;
+    float: left;
+    margin: 1% 5px;
+    box-shadow: 0px 0px 3px rgb(150, 150, 150);
 }
 .grid_1_of_4:first-child { 
 	margin-left: 0; 
@@ -1395,7 +1401,7 @@ p.note{
   border-bottom: 1px solid #ddd;
   font-size: 30px;
   margin-bottom: 20px;
-  width: 141px;
+  width: 500px;
 }
 .tblone {
   border: 1px solid #fff;
@@ -1444,8 +1450,9 @@ table.tblone img {
   float: left;
   text-align: center;
   width: 610px;
+  
 }
-.shopleft img{outline:none}
+.shopleft img{outline:none;}
 .shopleft a,.shopright a{outline:none}
 
 .shopright img {
@@ -2474,4 +2481,20 @@ p.terms {
 		width:92%;
 		padding:4%;
 	}
+}
+.success{
+	color:green;
+	font-size: 18px;
+}
+.error{
+	color:red;
+	font-size: 18px;
+}
+input.grey {
+    font-size: 19px;
+    background: #fff;
+}
+.button_details input[type=submit] {
+    float: left;
+    margin: 5px;
 }

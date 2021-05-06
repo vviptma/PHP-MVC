@@ -1,8 +1,8 @@
-<?php
+<?php 
 	include 'inc/header.php';
-	include 'inc/slider.php';
+	//include 'inc/slider.php';
 ?>
-<div class="main">
+ <div class="main">
     <div class="content">
     	<div class="support">
   			<div class="support_desc">
@@ -54,10 +54,9 @@
 				 </div>
 			  </div>    	
     </div>
-</div>
+ </div>
 
-<?php
+<?php 
 	include 'inc/footer.php';
-?>
-
-
+	
+ ?>

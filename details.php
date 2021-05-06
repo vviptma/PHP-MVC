@@ -1,185 +1,187 @@
-<!DOCTYPE HTML>
-<head>
-<title>Free Smart Store Website Template</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<link href="css/style.css" rel="stylesheet" type="text/css" media="all"/>
-<link href="css/menu.css" rel="stylesheet" type="text/css" media="all"/>
-<script src="js/jquerymain.js"></script>
-<script src="js/script.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script> 
-<script type="text/javascript" src="js/nav.js"></script>
-<script type="text/javascript" src="js/move-top.js"></script>
-<script type="text/javascript" src="js/easing.js"></script> 
-<script type="text/javascript" src="js/nav-hover.js"></script>
-<link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Doppio+One' rel='stylesheet' type='text/css'>
-<script type="text/javascript">
-  $(document).ready(function($){
-    $('#dc_mega-menu-orange').dcMegaMenu({rowItems:'4',speed:'fast',effect:'fade'});
-  });
-</script>
-</head>
-<body>
-  <div class="wrap">
-		<div class="header_top">
-			<div class="logo">
-				<a href="index.php"><img src="images/logo.png" alt="" /></a>
-			</div>
-			  <div class="header_top_right">
-			    <div class="search_box">
-				    <form>
-				    	<input type="text" value="Search for Products" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search for Products';}"><input type="submit" value="SEARCH">
-				    </form>
-			    </div>
-			    <div class="shopping_cart">
-					<div class="cart">
-						<a href="#" title="View my shopping cart" rel="nofollow">
-								<span class="cart_title">Cart</span>
-								<span class="no_product">(empty)</span>
-							</a>
-						</div>
-			      </div>
-		   <div class="login">
-		   	   <span><a href="login.php">Login</a></span>
-		   </div>
-		 <div class="clear"></div>
-	 </div>
-	 <div class="clear"></div>
- </div>
-<div class="menu">
-	<ul id="dc_mega-menu-orange" class="dc_mm-orange">
-	  <li><a href="index.php">Home</a></li>
-	  <li><a href="products.php">Products</a> </li>
-	  <li><a href="topbrands.php">Top Brands</a></li>
-	   <li><a href="cart.php">Cart</a></li>
-	  <li><a href="contact.php">Contact</a> </li>
-	  <div class="clear"></div>
-	</ul>
-</div>
+<?php 
+	include 'inc/header.php';
+	// include 'inc/slider.php';
+?>
+<?php
 
+	if(!isset($_GET['proid']) || $_GET['proid']==NULL){
+       echo "<script>window.location ='404.php'</script>";
+    }else{
+        $id = $_GET['proid']; 
+    }
+ 	$customer_id = Session::get('customer_id');
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['compare'])) {
+
+        $productid = $_POST['productid'];
+        $insertCompare = $product->insertCompare($productid, $customer_id);
+        
+    }
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['wishlist'])) {
+
+        $productid = $_POST['productid'];
+        $insertWishlist = $product->insertWishlist($productid, $customer_id);
+        
+    }
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+
+        $quantity = $_POST['quantity'];
+        $insertCart = $ct->add_to_cart($quantity, $id);
+        
+    }
+    if(isset($_POST['binhluan_submit'])){
+    	$binhluan_insert = $cs->insert_binhluan();
+    }
+?>
  <div class="main">
     <div class="content">
     	<div class="section group">
-				<div class="cont-desc span_1_of_2">				
+		<?php
+
+		$get_product_details = $product->get_details($id);
+		if($get_product_details){
+			while($result_details = $get_product_details->fetch_assoc()){
+		
+
+		?>
+		<div class="cont-desc span_1_of_2">				
 					<div class="grid images_3_of_2">
-						<img src="images/preview-img.jpg" alt="" />
+						<img src="admin/uploads/<?php echo $result_details['image'] ?>" alt="" />
 					</div>
 				<div class="desc span_3_of_2">
-					<h2>Lorem Ipsum is simply dummy text </h2>
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>					
+					<h2><?php echo $result_details['productName'] ?></h2>
+					<p><?php echo $fm->textShorten($result_details['product_desc'],150) ?></p>					
 					<div class="price">
-						<p>Price: <span>$500</span></p>
-						<p>Category: <span>Laptop</span></p>
-						<p>Brand:<span>Samsnumg</span></p>
+						<p>Price: <span><?php echo $fm->format_currency($result_details['price'])." "."VNĐ" ?></span></p>
+						<p>Category: <span><?php echo $result_details['catName'] ?></span></p>
+						<p>Brand:<span><?php echo $result_details['brandName']?></span></p>
 					</div>
 				<div class="add-cart">
-					<form action="cart.php" method="post">
-						<input type="number" class="buyfield" name="" value="1"/>
+					<form action="" method="post">
+						<input type="number" class="buyfield" name="quantity" value="1" min="1"/>
 						<input type="submit" class="buysubmit" name="submit" value="Buy Now"/>
-					</form>				
+
+
+					</form>		
+					<?php
+						if(isset($insertCart)){
+							echo $insertCart;
+						}
+					?>		
 				</div>
+				<div class="add-cart">
+					<div class="button_details">
+					<form action="" method="POST">
+					
+					<input type="hidden" name="productid" value="<?php echo $result_details['productId'] ?>"/>
+
+					
+					<?php
+	
+					$login_check = Session::get('customer_login'); 
+						if($login_check){
+							echo '<input type="submit" class="buysubmit" name="compare" value="Thêm vào so sánh"/>'.'  ';
+							
+						}else{
+							echo '';
+						}
+							
+					?>
+					
+					
+					</form>
+
+
+					<form action="" method="POST">
+					
+					<input type="hidden" name="productid" value="<?php echo $result_details['productId'] ?>"/>
+
+					
+					<?php
+	
+					$login_check = Session::get('customer_login'); 
+						if($login_check){
+							
+							echo '<input type="submit" class="buysubmit" name="wishlist" value="Thêm vào yêu thích">';
+						}else{
+							echo '';
+						}
+							
+					?>
+					
+					
+					
+					</form>
+
+					</div>
+					<div class="clear"></div>
+					<p>
+					<?php
+					if(isset($insertCompare)){
+						echo $insertCompare;
+					}
+					?>
+					<?php
+					if(isset($insertWishlist)){
+						echo $insertWishlist;
+					}
+					?>
+					
+					
+				</p>
+					
+				</div>
+
 			</div>
-			<div class="product-desc">
-			<h2>Product Details</h2>
-			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-	        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
-	    </div>
+				<div class="product-desc">
+				<h2>Nội dung sản phẩm</h2>
+				<?php echo $fm->textShorten($result_details['product_desc'],150) ?>
+		    </div>
 				
-	</div>
+		</div>
+		<?php
+			}
+		}
+		?>
 				<div class="rightsidebar span_3_of_1">
 					<h2>CATEGORIES</h2>
 					<ul>
-				      <li><a href="productbycat.php">Mobile Phones</a></li>
-				      <li><a href="productbycat.php">Desktop</a></li>
-				      <li><a href="productbycat.php">Laptop</a></li>
-				      <li><a href="productbycat.php">Accessories</a></li>
-				      <li><a href="productbycat.php#">Software</a></li>
-					   <li><a href="productbycat.php">Sports & Fitness</a></li>
-					   <li><a href="productbycat.php">Footwear</a></li>
-					   <li><a href="productbycat.php">Jewellery</a></li>
-					   <li><a href="productbycat.php">Clothing</a></li>
-					   <li><a href="productbycat.php">Home Decor & Kitchen</a></li>
-					   <li><a href="productbycat.php">Beauty & Healthcare</a></li>
-					   <li><a href="productbycat.php">Toys, Kids & Babies</a></li>
+					<?php 
+					$getall_category = $cat->show_category_fontend();
+						if($getall_category){
+							while($result_allcat = $getall_category->fetch_assoc()){
+					?>
+				     	 <li><a href="productbycat.php?catid=<?php echo $result_allcat['catId'] ?>"><?php echo $result_allcat['catName'] ?></a></li>
+				    <?php
+				    	}
+					}
+				    ?>
     				</ul>
     	
  				</div>
  		</div>
- 	</div>
-	</div>
-   <div class="footer">
-   	  <div class="wrapper">	
-	     <div class="section group">
-				<div class="col_1_of_4 span_1_of_4">
-						<h4>Information</h4>
-						<ul>
-						<li><a href="#">About Us</a></li>
-						<li><a href="#">Customer Service</a></li>
-						<li><a href="#"><span>Advanced Search</span></a></li>
-						<li><a href="#">Orders and Returns</a></li>
-						<li><a href="#"><span>Contact Us</span></a></li>
-						</ul>
-					</div>
-				<div class="col_1_of_4 span_1_of_4">
-					<h4>Why buy from us</h4>
-						<ul>
-						<li><a href="about.php">About Us</a></li>
-						<li><a href="faq.php">Customer Service</a></li>
-						<li><a href="#">Privacy Policy</a></li>
-						<li><a href="contact.php"><span>Site Map</span></a></li>
-						<li><a href="preview-2.php"><span>Search Terms</span></a></li>
-						</ul>
-				</div>
-				<div class="col_1_of_4 span_1_of_4">
-					<h4>My account</h4>
-						<ul>
-							<li><a href="contact.php">Sign In</a></li>
-							<li><a href="index.php">View Cart</a></li>
-							<li><a href="#">My Wishlist</a></li>
-							<li><a href="#">Track My Order</a></li>
-							<li><a href="faq.php">Help</a></li>
-						</ul>
-				</div>
-				<div class="col_1_of_4 span_1_of_4">
-					<h4>Contact</h4>
-						<ul>
-							<li><span>+91-123-456789</span></li>
-							<li><span>+00-123-000000</span></li>
-						</ul>
-						<div class="social-icons">
-							<h4>Follow Us</h4>
-					   		  <ul>
-							      <li class="facebook"><a href="#" target="_blank"> </a></li>
-							      <li class="twitter"><a href="#" target="_blank"> </a></li>
-							      <li class="googleplus"><a href="#" target="_blank"> </a></li>
-							      <li class="contact"><a href="#" target="_blank"> </a></li>
-							      <div class="clear"></div>
-						     </ul>
-   	 					</div>
-				</div>
-			</div>
-			<div class="copy_right">
-				<p>Compant Name © All rights Reseverd</a> </p>
-		   </div>
-     </div>  
-    </div>
-    <script type="text/javascript">
-		$(document).ready(function() {
-			/*
-			var defaults = {
-	  			containerID: 'toTop', // fading element id
-				containerHoverID: 'toTopHover', // fading element hover id
-				scrollSpeed: 1200,
-				easingType: 'linear' 
-	 		};
-			*/
-			
-			$().UItoTop({ easingType: 'easeOutQuart' });
-			
-		});
-	</script>
-    <a href="#" id="toTop" style="display: block;"><span id="toTopHover" style="opacity: 1;"></span></a>
-</body>
-</html>
+ 		<div class="binhluan">
+		<div class="row">
 
+			<div class="col-md-8">
+			<h5>Bình luận sản phẩm</h5>
+			<?php
+			if(isset($binhluan_insert)){
+				echo $binhluan_insert;
+			} 
+			?>
+			<form action="" method="POST">
+				<p><input type="hidden" value="<?php echo $id ?>" name="product_id_binhluan"></p>
+	 			<p><input type="text" placeholder="Điền tên" class="form-control" name="tennguoibinhluan"></p>
+	 			<p><textarea rows="5" style="resize: none;" placeholder="Bình luận...." class="form-control" name="binhluan"></textarea></p>
+	 			<p><input type="submit" name="binhluan_submit" class="btn btn-success" value="Gửi bình luận"></p>
+ 			</form>
+ 		</div>
+ 		</div>	
+ 			</textarea>
+ 		</div>
+ 	</div>
+
+<?php 
+	include 'inc/footer.php';
+	
+ ?>
